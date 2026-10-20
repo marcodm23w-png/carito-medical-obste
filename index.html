@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Obstetra Virtual | Aventura de Cuidado Materno</title>
+<style>
+:root{--wine:#781f43;--wine2:#9e315c;--pink:#fff0f5;--cream:#fffaf7;--ink:#34232b;--green:#26734d;--red:#a32d36;--gold:#f2c66d}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:linear-gradient(135deg,#fff4f7,#f7e9ef);color:var(--ink);min-height:100vh}
+header{background:linear-gradient(120deg,var(--wine),#a53c65);color:white;padding:22px 16px;text-align:center}
+header .mark{font-size:2.4rem}header h1{margin:4px 0;font-size:clamp(1.55rem,4vw,2.35rem)}header p{margin:5px auto;max-width:700px}
+main{max-width:920px;margin:24px auto;padding:0 14px 35px}.panel{background:white;border-radius:22px;padding:clamp(18px,4vw,32px);box-shadow:0 12px 34px #5a17301a;border:1px solid #f1dbe4}
+.topline{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;color:#744257;font-weight:700;font-size:.92rem}
+.progress{height:9px;background:#f4e2e9;border-radius:20px;overflow:hidden;margin:13px 0 24px}.bar{height:100%;width:0;background:linear-gradient(90deg,#b84e77,#781f43);transition:width .3s}
+.persona{display:flex;gap:16px;align-items:center;margin:10px 0 20px}.avatar{width:76px;height:76px;flex:0 0 76px;border-radius:22px;background:#fde4ed;display:grid;place-items:center;font-size:2.7rem}
+.persona h2{margin:0 0 4px;color:var(--wine);font-size:1.35rem}.persona p{margin:0;line-height:1.45}
+.tag{display:inline-block;background:#fbe6ee;color:#782346;padding:5px 10px;border-radius:20px;font-size:.8rem;font-weight:800;margin-bottom:10px}
+.question{font-size:clamp(1.2rem,3vw,1.55rem);line-height:1.35;margin:10px 0 18px}
+.options{display:grid;gap:11px}.option{width:100%;text-align:left;border:2px solid #ead5df;border-radius:14px;padding:14px 15px;background:#fff;color:var(--ink);font-size:1rem;cursor:pointer;transition:.15s}.option:hover:not(:disabled){border-color:var(--wine2);background:#fff7fa;transform:translateY(-1px)}.option:focus-visible,button:focus-visible{outline:3px solid #e6a8bf;outline-offset:2px}.option:disabled{cursor:default}.option.correct{border-color:#60a881;background:#effaf3}.option.wrong{border-color:#d77b81;background:#fff1f1}
+.feedback{display:none;margin-top:17px;border-radius:14px;padding:15px;line-height:1.5}.feedback.show{display:block}.feedback.good{background:#effaf3;border:1px solid #b8e1c7}.feedback.bad{background:#fff5e8;border:1px solid #f0d0a0}.feedback strong{display:block;margin-bottom:4px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.btn{border:0;border-radius:12px;padding:12px 18px;font-size:1rem;font-weight:800;cursor:pointer}.primary{background:var(--wine);color:white}.primary:hover{background:#5d1733}.secondary{background:#f7e8ee;color:var(--wine)}.btn:disabled{opacity:.5;cursor:not-allowed}
+.start{text-align:center}.start .hero{font-size:4.5rem;margin:8px}.start h2{color:var(--wine);font-size:1.8rem;margin:8px 0}.start p{max-width:650px;margin:10px auto;line-height:1.6}.chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:18px 0}.chips span{background:#fff0f5;border:1px solid #f0d3df;padding:8px 12px;border-radius:20px;font-size:.9rem}
+.result{text-align:center}.result .score{font-size:3rem;font-weight:900;color:var(--wine)}.result h2{color:var(--wine)}.result p{line-height:1.6}.small{font-size:.85rem;color:#6c5962;line-height:1.5;margin-top:22px}.notice{font-size:.86rem;background:#fff8e8;border-left:4px solid var(--gold);padding:12px;border-radius:8px;text-align:left;margin:18px 0}
+footer{text-align:center;color:#775c69;font-size:.82rem;padding:0 16px 24px}
+@media(max-width:520px){.persona{align-items:flex-start}.avatar{width:60px;height:60px;flex-basis:60px;font-size:2.2rem;border-radius:17px}.panel{border-radius:17px}.option{padding:13px}}
+</style>
+</head>
+<body>
+<header><div class="mark" aria-hidden="true">🤰🏽🩺</div><h1>Obstetra Virtual</h1><p>Una aventura interactiva para aprender a cuidar tu salud durante el embarazo</p></header>
+<main><section class="panel" id="app" aria-live="polite"></section></main>
+<footer>Recurso educativo · No reemplaza la atención personalizada de una obstetra o profesional de salud.</footer>
+<script>
+const questions = [
+ {stage:"Alimentación saludable",weeks:"Primer trimestre",icon:"🥗",scene:"María está embarazada y tiene dudas sobre su alimentación.",q:"¿Qué debería hacer María?",opts:[
+  ["Seguir una alimentación variada y consultar a su obstetra si tiene dudas.",true,"¡Muy bien! Una alimentación variada y la orientación prenatal ayudan a cubrir sus necesidades. Las recomendaciones deben adaptarse a cada persona."],
+  ["Comer el doble de todo porque ahora come por dos.",false,"Durante el embarazo no se necesita simplemente comer el doble. Importan la calidad, la variedad y las recomendaciones individualizadas."],
+  ["Dejar de comer frutas y verduras.",false,"Las frutas y verduras bien lavadas pueden formar parte de una alimentación saludable durante el embarazo."]
+ ]},
+ {stage:"Controles prenatales",weeks:"Desde el inicio del embarazo",icon:"📅",scene:"Lucía acaba de enterarse de que está embarazada y se siente bien.",q:"¿Qué sería lo más recomendable?",opts:[
+  ["Esperar hasta sentir molestias para acudir a consulta.",false,"Los controles prenatales son importantes incluso cuando la gestante se siente bien."],
+  ["Programar su control prenatal pronto y cumplir las citas indicadas.",true,"¡Correcto! Iniciar pronto los controles permite evaluar la salud de la gestante y el desarrollo del bebé."],
+  ["Tomar medicamentos por su cuenta para prevenir problemas.",false,"No debe automedicarse. Debe consultar a un profesional antes de usar medicamentos o suplementos."]
+ ]},
+ {stage:"Desarrollo del bebé",weeks:"Durante el embarazo",icon:"👶",scene:"Ana quiere saber cómo va creciendo su bebé y si todo marcha bien.",q:"¿Cuál es la mejor manera de hacer seguimiento?",opts:[
+  ["Guiarse solo por lo que dicen las redes sociales.",false,"Las redes pueden contener información incorrecta. Es mejor resolver dudas con profesionales de salud y fuentes confiables."],
+  ["Comparar su embarazo con el de todas sus amigas.",false,"Cada embarazo puede ser diferente; las comparaciones no permiten evaluar el desarrollo del bebé."],
+  ["Asistir a sus controles y realizar las evaluaciones que le indiquen.",true,"¡Así es! Los controles y evaluaciones indicados permiten hacer seguimiento del embarazo según cada caso."]
+ ]},
+ {stage:"Suplementos y medicamentos",weeks:"En cualquier etapa",icon:"💊",scene:"Rosa escucha que una amiga toma pastillas y quiere tomar las mismas durante su embarazo.",q:"¿Qué debería hacer Rosa?",opts:[
+  ["Tomarlas porque a su amiga le funcionaron.",false,"Los medicamentos y suplementos no son iguales para todas las personas. No conviene compartir tratamientos."],
+  ["Consultar con su obstetra antes de iniciar o suspender medicamentos o suplementos.",true,"¡Correcto! El profesional puede indicar qué necesita y en qué cantidad, según su situación."],
+  ["Tomar una dosis mayor para que haga efecto más rápido.",false,"Nunca debe aumentar dosis por cuenta propia. Puede ser perjudicial."]
+ ]},
+ {stage:"Movimiento y descanso",weeks:"Rutina diaria",icon:"🚶🏽‍♀️",scene:"Carla tiene un embarazo sin complicaciones conocidas y quiere mantenerse activa.",q:"¿Qué opción es más adecuada?",opts:[
+  ["Preguntar en su control qué actividad es segura para ella y mantenerse activa según la orientación recibida.",true,"¡Muy bien! La actividad apropiada puede beneficiar a muchas gestantes, pero debe ajustarse a su salud y a las indicaciones profesionales."],
+  ["Empezar de golpe un entrenamiento muy intenso.",false,"Es mejor evitar cambios bruscos y consultar qué actividad e intensidad son adecuadas."],
+  ["Guardar reposo absoluto durante todo el embarazo sin indicación médica.",false,"El reposo absoluto no es necesario para todas las gestantes y debe seguirse solo si lo indica el equipo de salud."]
+ ]},
+ {stage:"Señales de alarma",weeks:"Importante",icon:"🚨",scene:"Patricia está embarazada y presenta sangrado vaginal abundante y dolor intenso.",q:"¿Qué debe hacer?",opts:[
+  ["Esperar varios días para ver si se le pasa.",false,"El sangrado abundante y el dolor intenso requieren atención médica urgente; no debe esperar."],
+  ["Buscar atención médica de urgencia de inmediato.",true,"¡Correcto! Son señales de alarma. Debe acudir a un servicio de urgencias o contactar los servicios de emergencia locales."],
+  ["Tomar un remedio casero y continuar sus actividades.",false,"Los remedios caseros no sustituyen la evaluación urgente ante señales de alarma."]
+ ]},
+ {stage:"Bienestar emocional",weeks:"Salud integral",icon:"💗",scene:"Elena se siente preocupada, llora con frecuencia y le cuesta hablar de sus emociones.",q:"¿Cuál sería una buena opción?",opts:[
+  ["Decirle que debe aguantar porque el embarazo siempre es así.",false,"Sus emociones merecen atención y apoyo; no hay que minimizar lo que siente."],
+  ["Escucharla sin juzgar y animarla a conversar con su obstetra o un profesional de salud.",true,"¡Exacto! Hablar con alguien de confianza y pedir apoyo profesional puede ayudar."],
+  ["Aislarla para que no se preocupe por nadie.",false,"El apoyo social respetuoso puede ser útil. Si el malestar persiste, conviene buscar ayuda profesional."]
+ ]},
+ {stage:"Preparación para el nacimiento",weeks:"Tercer trimestre",icon:"👜",scene:"El embarazo de Julia avanza y quiere prepararse para el nacimiento.",q:"¿Qué puede hacer?",opts:[
+  ["Conversar con su equipo de salud sobre el plan de nacimiento, señales de alarma y cuándo acudir al establecimiento.",true,"¡Muy bien! Prepararse con información confiable y un plan de atención ayuda a tomar decisiones oportunas."],
+  ["Esperar hasta el último momento para averiguar a dónde ir.",false,"Es mejor planificar con anticipación dónde recibirá atención y cómo llegará."],
+  ["Confiar únicamente en consejos de personas sin formación sanitaria.",false,"Puede escuchar experiencias, pero las decisiones de salud deben orientarse con profesionales."]
+ ]}
+];
+let index=0,score=0,answered=false,chosen=[];
+const app=document.getElementById('app');
+function start(){index=0;score=0;answered=false;chosen=[];renderQuestion();}
+function renderStart(){app.innerHTML=`<div class="start"><div class="hero">👩🏽‍⚕️</div><span class="tag">JUEGO EDUCATIVO</span><h2>¡Bienvenida a tu aventura!</h2><p>Conoce a la obstetra virtual y ayuda a distintas gestantes a tomar decisiones informadas. Lee cada situación y elige una de las tres respuestas. Recibirás una explicación después de cada elección.</p><div class="chips"><span>🥗 Alimentación</span><span>👶 Desarrollo del bebé</span><span>🩺 Controles prenatales</span><span>💗 Bienestar</span></div><div class="notice">Importante: este juego brinda información general. No diagnostica ni reemplaza tus controles prenatales. Ante señales de alarma, busca atención médica.</div><button class="btn primary" onclick="start()">Comenzar juego ▶</button><p class="small">8 situaciones · Respuestas con explicación · Resultado final</p></div>`}
+function renderQuestion(){
+ answered=false; const q=questions[index];
+ app.innerHTML=`<div class="topline"><span>Situación ${index+1} de ${questions.length}</span><span>⭐ Puntaje: ${score}</span></div><div class="progress"><div class="bar" style="width:${index/questions.length*100}%"></div></div><div class="persona"><div class="avatar">${q.icon}</div><div><span class="tag">${q.stage}</span><h2>La obstetra virtual te pregunta</h2><p>${q.scene}</p></div></div><div class="question">${q.q}</div><div class="options">${q.opts.map((o,i)=>`<button class="option" onclick="answer(${i})">${String.fromCharCode(65+i)}. ${o[0]}</button>`).join('')}</div><div class="feedback" id="feedback" role="status"></div><div class="actions"><button id="next" class="btn primary" onclick="next()" disabled>${index===questions.length-1?'Ver resultado':'Siguiente situación →'}</button><button class="btn secondary" onclick="renderStart()">Salir al inicio</button></div>`;
+}
+function answer(i){
+ if(answered)return;answered=true;const q=questions[index],opt=q.opts[i];if(opt[1])score++;
+ document.querySelectorAll('.option').forEach((b,j)=>{b.disabled=true;if(q.opts[j][1])b.classList.add('correct');if(j===i&&!opt[1])b.classList.add('wrong')});
+ const f=document.getElementById('feedback');f.className='feedback show '+(opt[1]?'good':'bad');f.innerHTML=`<strong>${opt[1]?'✅ ¡Buena elección!':'💡 Aprendamos juntas'}</strong>${opt[2]}`;document.getElementById('next').disabled=false;
+}
+function next(){if(!answered)return;index++;if(index<questions.length)renderQuestion();else renderResult();}
+function renderResult(){
+ const pct=Math.round(score/questions.length*100);let title=pct===100?'¡Experta en cuidado materno!':pct>=70?'¡Vas muy bien!':'¡Sigue aprendiendo!';
+ app.innerHTML=`<div class="result"><div class="hero">🏆</div><span class="tag">AVENTURA COMPLETADA</span><h2>${title}</h2><div class="score">${score} / ${questions.length}</div><p>Respuestas correctas: <strong>${pct}%</strong></p><p>${pct>=70?'Has reforzado conocimientos importantes para el cuidado durante el embarazo.':'Cada pregunta es una oportunidad para aprender. Revisa las explicaciones y vuelve a intentarlo.'}</p><div class="notice"><strong>Recuerda:</strong> cada embarazo es diferente. Mantén tus controles prenatales y consulta a tu obstetra o profesional de salud ante dudas. Si hay sangrado abundante, dolor intenso, dificultad para respirar, convulsiones u otra señal grave, busca atención de urgencia.</div><div class="actions" style="justify-content:center"><button class="btn primary" onclick="start()">Jugar de nuevo ↻</button><button class="btn secondary" onclick="window.print()">Imprimir resultado</button></div><p class="small">Este resultado es educativo, no una evaluación clínica ni un diagnóstico.</p></div>`;
+}
+renderStart();
+</script>
+</body>
+</html>
